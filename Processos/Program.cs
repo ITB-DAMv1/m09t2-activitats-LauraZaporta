@@ -169,7 +169,7 @@ public class Program()
 
                 if (i == 100)
                 {
-                    lock (locker)
+                    lock (locker) // Per a què només un camell a l'hora executi el procés
                     {
                         if (winner == 0)
                         {
