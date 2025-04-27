@@ -1,8 +1,14 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Net.Sockets;
 
 public class Program()
 {
+    // Carrera de camells
+    private static object locker = new object();
+    private static int winner = 0;
+
+    // Programa principal
     public static void Main()
     {
         const string MenuInfo = "\n EXERCISES MENU" +
@@ -12,6 +18,7 @@ public class Program()
             "\n [3] - ExThree() - BrowserProcesses" +
             "\n [4] - See README.md" +
             "\n [5] - ExFive() - Five threads" +
+            "\n [6] - CamelRun() - Random run between 5 threads" +
             "\n [0] - Exit";
         const string MenuChoose = "\n Choose an option: ";
 
@@ -34,6 +41,9 @@ public class Program()
                     break;
                 case "5":
                     ExFive();
+                    break;
+                case "6":
+                    CamelRun();
                     break;
                 case "0":
                     exit = true;
@@ -121,5 +131,57 @@ public class Program()
         three.Join();
         four.Join();
         five.Join();
+    }
+    private static void CamelRun()
+    {
+        object locker = new object();
+
+        Thread camelOne = GenerateCamelThread(1, 100, 500);
+        Thread camelTwo = GenerateCamelThread(2, 50, 600);
+        Thread camelThree = GenerateCamelThread(3, 200, 300);
+        Thread camelFour = GenerateCamelThread(4, 150, 400);
+        Thread camelFive = GenerateCamelThread(5, 180, 650);
+
+        camelOne.Start();
+        camelTwo.Start();
+        camelThree.Start();
+        camelFour.Start();
+        camelFive.Start();
+
+        camelOne.Join();
+        camelTwo.Join();
+        camelThree.Join();
+        camelFour.Join();
+        camelFive.Join();
+
+        Console.WriteLine($"\n Camel {winner} is the winner of the race!");
+    }
+    private static Thread GenerateCamelThread(int camelNum, int min, int max)
+    {
+        Random r = new Random();
+        int rest = r.Next(min, max);
+
+        Thread camel = new Thread(() =>
+        {
+            for (int i = 1; i <= 100; i++)
+            {
+                Console.WriteLine($"Camel {camelNum} has reached {i}!");
+
+                if (i == 100)
+                {
+                    lock (locker)
+                    {
+                        if (winner == 0)
+                        {
+                            winner = camelNum;
+                            Console.WriteLine($"Camel {camelNum} has crossed the finish line!");
+                        }
+                    }
+                }
+
+                Thread.Sleep(rest);
+            }
+        });
+        return camel;
     }
 }
