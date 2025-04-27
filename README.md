@@ -1,0 +1,1 @@
+"# Inicialitzaci¢ de main" 
