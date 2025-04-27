@@ -9,6 +9,7 @@ public class Program()
             "\n ------------- \n" +
             "\n [1] - See README.md" +
             "\n [2] - ExTwo() - Processes informaation" +
+            "\n [3] - ExThree() - BrowserProcesses" +
             "\n [0] - Exit";
         const string MenuChoose = "\n Choose an option: ";
 
@@ -25,6 +26,9 @@ public class Program()
             {
                 case "2":
                     ExTwo();
+                    break;
+                case "3":
+                    ExThree("chrome");
                     break;
                 case "0":
                     exit = true;
@@ -50,6 +54,24 @@ public class Program()
             {
                 Console.WriteLine($"\n Name: {process.ProcessName} \n PID: {process.Id}\n");
                 sw.WriteLine($"Name: {process.ProcessName} ----- PID: {process.Id}");
+            }
+        }
+    }
+    private static void ExThree(string browser)
+    {
+        Process[] browserProcesses = Process.GetProcessesByName(browser);
+        if (browserProcesses.Length == 0)
+        {
+            Console.WriteLine("\n The browser is not working at the moment");
+        }
+        else
+        {
+            Console.WriteLine("\n BROWSER {0}\n --------------", browser);
+            foreach (Process proc in browserProcesses)
+            {
+                Console.WriteLine($"\n PID: {proc.Id}" +
+                    $"\n Horaa d'inici: {proc.StartTime}" +
+                    $"\n Prioritat: {proc.BasePriority}");
             }
         }
     }
